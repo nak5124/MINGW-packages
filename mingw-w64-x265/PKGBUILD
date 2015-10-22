@@ -5,62 +5,129 @@ _realname=x265
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgver=1.8
-pkgrel=2
+pkgrel=3
 pkgdesc='Open Source H265/HEVC video encoder (mingw-w64)'
 arch=('any')
 license=('GPL')
 depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs")
-makedepends=('yasm' "${MINGW_PACKAGE_PREFIX}-cmake")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
+             "${MINGW_PACKAGE_PREFIX}-yasm")
 options=('strip')
 url='https://bitbucket.org/multicoreware/x265'
-source=("${_realname}-${pkgver}.tar.bz2"::"${url}/get/${pkgver}.tar.bz2")
-md5sums=('e3a008a74b8f44612cac4ec2f537b0f8')
+source=("$url/downloads/x265_$pkgver.tar.gz")
+sha512sums=('498c25ff6e5c68849db11d1509cc6f7e96d3a2e6594542589ac5b9f6d65a09ab3af590dcc3357f985f218f8d54af364c998cfedfbe95644747835c059214935c')
+
+srcdir_name=${_realname}_11047
+
+prepare() {
+  cd "${srcdir}"/$srcdir_name
+
+  local -ra _bitdepth=(8 10 12)
+  local _bd
+  for _bd in ${_bitdepth[@]}
+  do
+    rm -fr build/msys/${_bd}bit
+    mkdir -p build/msys/${_bd}bit
+    if [ "${_bd}" != '8' ]; then
+      rm -fr build/msys/dll/${_bd}bit
+      mkdir -p build/msys/dll/${_bd}bit
+    fi
+  done
+}
 
 build() {
-  # Build 8 bit-depth lib and exe.
-  cd "${srcdir}"/multicoreware-x265-*/build/msys
-  if [ -d 8bit ]; then
-    rm -fr 8bit
-  fi
-  mkdir -p 8bit
-  cd 8bit
-
-  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
-  ${MINGW_PREFIX}/bin/cmake \
-    -G "MSYS Makefiles" \
-    -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
-    ../../../source
-  make
-
-  # Build 10 bit-depth dll for x265_api_get.
-  if [ -d ../10bit ]; then
-    rm -fr ../10bit
-  fi
-  mkdir -p ../10bit
-  cd ../10bit
-
+  local _ENABLE_ASM
   if [ "${CARCH}" = 'i686' ]; then
     _ENABLE_ASM=OFF
   else
     _ENABLE_ASM=ON
   fi
 
+  # Build 12 bit-depth static lib for multilib.
+  cd "${srcdir}"/${srcdir_name}/build/msys/12bit
+  ${MINGW_PREFIX}/bin/cmake \
+    -G "MSYS Makefiles" \
+    -DHIGH_BIT_DEPTH=ON \
+    -DMAIN12=ON \
+    -DEXPORT_C_API=OFF \
+    -DENABLE_SHARED=OFF \
+    -DENABLE_CLI=OFF \
+    -DENABLE_ASSEMBLY=${_ENABLE_ASM} \
+    ../../../source
+  make
+  cp libx265.a ../8bit/libx265_main12.a
+
+  # Build 10 bit-depth static lib for multilib.
+  cd ../10bit
+  ${MINGW_PREFIX}/bin/cmake \
+    -G "MSYS Makefiles" \
+    -DHIGH_BIT_DEPTH=ON \
+    -DEXPORT_C_API=OFF \
+    -DENABLE_SHARED=OFF \
+    -DENABLE_CLI=OFF \
+    -DENABLE_ASSEMBLY=${_ENABLE_ASM} \
+    ../../../source
+  make
+  cp libx265.a ../8bit/libx265_main10.a
+
+  # Build 8 bit-depth lib and multilib exe.
+  cd ../8bit
   MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
   ${MINGW_PREFIX}/bin/cmake \
     -G "MSYS Makefiles" \
     -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+    -DEXTRA_LIB="x265_main10.a;x265_main12.a" \
+    -DEXTRA_LINK_FLAGS="-L." \
+    -DLINKED_10BIT=ON \
+    -DLINKED_12BIT=ON \
+    ../../../source
+  make
+
+  # Generate multilib static library.
+  mv libx265.a libx265_main.a
+  ar -M <<EOF
+  CREATE libx265.a
+  ADDLIB libx265_main.a
+  ADDLIB libx265_main10.a
+  ADDLIB libx265_main12.a
+  SAVE
+  END
+EOF
+
+  # Build 10 bit-depth dll for x265_api_get.
+  cd ../dll/10bit
+  ${MINGW_PREFIX}/bin/cmake \
+    -G "MSYS Makefiles" \
     -DHIGH_BIT_DEPTH=ON \
     -DENABLE_ASSEMBLY=${_ENABLE_ASM} \
     -DENABLE_CLI=OFF \
-    ../../../source
+    ../../../../source
+  make
+
+  # Build 12 bit-depth dll for x265_api_get.
+  cd ../12bit
+  ${MINGW_PREFIX}/bin/cmake \
+    -G "MSYS Makefiles" \
+    -DHIGH_BIT_DEPTH=ON \
+    -DMAIN12=ON \
+    -DENABLE_ASSEMBLY=${_ENABLE_ASM} \
+    -DENABLE_CLI=OFF \
+    ../../../../source
   make
 }
 
 package() {
-  cd "${srcdir}"/multicoreware-x265-*/build/msys/8bit
+  cd "${srcdir}"/${srcdir_name}/build/msys/8bit
   make DESTDIR=${pkgdir} install
 
   # Install 10 bit-depth dll.
-  cd "${srcdir}"/multicoreware-x265-*/build/msys/10bit
+  cd ../dll/10bit
   install -m 755 libx265.dll "${pkgdir}"/${MINGW_PREFIX}/bin/libx265_main10.dll
+
+  # Install 12 bit-depth dll.
+  cd ../12bit
+  install -m 755 libx265.dll "${pkgdir}"/${MINGW_PREFIX}/bin/libx265_main12.dll
+
+  # Copy libx265.dll to libx265_main.dll for x265_api_get.
+  cp -fa "${pkgdir}"/${MINGW_PREFIX}/bin/libx265.dll "${pkgdir}"/${MINGW_PREFIX}/bin/libx265_main.dll
 }
