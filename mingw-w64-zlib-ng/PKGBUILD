@@ -1,0 +1,92 @@
+# Maintainer: Maksim Bondarenkov <maksapple2306@gmail.com>
+
+_realname=zlib-ng
+pkgbase=mingw-w64-${_realname}
+pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}-compat")
+provides=("${MINGW_PACKAGE_PREFIX}-zlib")
+conflicts=("${MINGW_PACKAGE_PREFIX}-zlib")
+pkgver=2.2.2
+pkgrel=1
+pkgdesc='Zlib replacement with optimizations for "next generation" systems (zlib compat) (mingw-w64)'
+arch=('any')
+mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url='https://github.com/zlib-ng/zlib-ng'
+license=('spdx:Zlib')
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
+             "${MINGW_PACKAGE_PREFIX}-ninja"
+             "${MINGW_PACKAGE_PREFIX}-cc")
+source=("${url}/archive/${pkgver}/${_realname}-${pkgver}.tar.gz"
+        "0001-CMakeiLists.txt-Fix-mingw-lib-naming.patch"
+        "0002-zconf.h-Fix-largefile-on-mingw-w64.patch"
+        "0003-Don-t-Add-DWITH_GZFILEOP-in-pc-file-when-ZLIB_COMPAT.patch")
+sha256sums=('fcb41dd59a3f17002aeb1bb21f04696c9b721404890bb945c5ab39d2cb69654c'
+            'cc5aa628292f061ef1cfc557b30d3326c9d669ea20c6e61d5aecbbf1ac1ed9aa'
+            '8bc2b91871bcd65c6f179775a110e98c48fb999184964acc7f2f6cbf30f3b7d1'
+            '805c6dcbfb999cbfea5dd5e06f37e27723295ea4cf019066a4fa0389165d23d0')
+
+prepare() {
+  cd "${srcdir}/${_realname}-${pkgver}"
+
+  patch -p1 -i "${srcdir}/0001-CMakeiLists.txt-Fix-mingw-lib-naming.patch"
+  patch -p1 -i "${srcdir}/0002-zconf.h-Fix-largefile-on-mingw-w64.patch"
+  patch -p1 -i "${srcdir}/0003-Don-t-Add-DWITH_GZFILEOP-in-pc-file-when-ZLIB_COMPAT.patch"
+}
+
+build() {
+  declare -a _cmake_opts=(
+    -GNinja
+    -DCMAKE_INSTALL_PREFIX="${MINGW_PREFIX}"
+    -DCMAKE_INSTALL_LIBDIR=lib
+    -DWITH_GTEST=OFF
+    -DWITH_UNALIGNED=OFF
+    -DZLIB_COMPAT=ON
+  )
+  if check_option "debug" "n"; then
+    _cmake_opts+=("-DCMAKE_BUILD_TYPE=Release")
+  else
+    _cmake_opts+=("-DCMAKE_BUILD_TYPE=Debug")
+  fi
+
+  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+    "${MINGW_PREFIX}"/bin/cmake.exe \
+      "${_cmake_opts[@]}" \
+      -DBUILD_SHARED_LIBS=OFF \
+      -S "${_realname}-${pkgver}" \
+      -B "build-${MSYSTEM}-static"
+
+  "${MINGW_PREFIX}"/bin/cmake.exe --build "build-${MSYSTEM}-static"
+
+  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+    "${MINGW_PREFIX}"/bin/cmake.exe \
+      "${_cmake_opts[@]}" \
+      -DBUILD_SHARED_LIBS=ON \
+      -S "${_realname}-${pkgver}" \
+      -B "build-${MSYSTEM}-shared"
+
+  "${MINGW_PREFIX}"/bin/cmake.exe --build "build-${MSYSTEM}-shared"
+}
+
+check() {
+  msg2 "Checking static"
+  ctest --output-on-failure --test-dir "build-${MSYSTEM}-static"
+  msg2 "Checking shared"
+  ctest --output-on-failure --test-dir "build-${MSYSTEM}-shared"
+}
+
+package_zlib-ng-compat() {
+  DESTDIR="${pkgdir}" "${MINGW_PREFIX}"/bin/cmake.exe --install "build-${MSYSTEM}-static"
+  DESTDIR="${pkgdir}" "${MINGW_PREFIX}"/bin/cmake.exe --install "build-${MSYSTEM}-shared"
+
+  install -Dm644 "${srcdir}/${_realname}-${pkgver}/LICENSE.md" "${pkgdir}${MINGW_PREFIX}/share/licenses/zlib/LICENSE.md"
+}
+
+# template start; name=mingw-w64-splitpkg-wrappers; version=1.0;
+# vim: set ft=bash :
+
+# generate wrappers
+for _name in "${pkgname[@]}"; do
+  _short="package_${_name#${MINGW_PACKAGE_PREFIX}-}"
+  _func="$(declare -f "${_short}")"
+  eval "${_func/#${_short}/package_${_name}}"
+done
+# template end;

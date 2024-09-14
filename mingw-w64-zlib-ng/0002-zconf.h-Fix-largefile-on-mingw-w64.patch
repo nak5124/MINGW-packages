@@ -1,0 +1,57 @@
+From 9df805b08773ddeaecd31e81ee9de94a0329bacc Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Mon, 22 Jul 2024 00:36:48 +0900
+Subject: [PATCH 2/3] zconf.h: Fix largefile on mingw-w64.
+
+---
+ zconf-ng.h.in | 4 ++--
+ zconf.h.in    | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/zconf-ng.h.in b/zconf-ng.h.in
+index a1b5311b..c5d44720 100644
+--- a/zconf-ng.h.in
++++ b/zconf-ng.h.in
+@@ -139,7 +139,7 @@ typedef PTRDIFF_TYPE ptrdiff_t;
+ #  endif
+ #endif
+ 
+-#if defined(_LFS64_LARGEFILE) && _LFS64_LARGEFILE-0
++#if (defined(_LFS64_LARGEFILE) && _LFS64_LARGEFILE-0) || defined(__MINGW32__)
+ #  define Z_LFS64
+ #endif
+ 
+@@ -161,7 +161,7 @@ typedef PTRDIFF_TYPE ptrdiff_t;
+ #  define z_off_t long
+ #endif
+ 
+-#if !defined(_WIN32) && defined(Z_LARGE64)
++#if (!defined(_WIN32) || defined(__MINGW32__)) && defined(Z_LARGE64)
+ #  define z_off64_t off64_t
+ #else
+ #  if defined(__MSYS__)
+diff --git a/zconf.h.in b/zconf.h.in
+index be8221fd..ede0a972 100644
+--- a/zconf.h.in
++++ b/zconf.h.in
+@@ -167,7 +167,7 @@ typedef PTRDIFF_TYPE ptrdiff_t;
+ #  endif
+ #endif
+ 
+-#if defined(_LFS64_LARGEFILE) && _LFS64_LARGEFILE-0
++#if (defined(_LFS64_LARGEFILE) && _LFS64_LARGEFILE-0) || defined(__MINGW32__)
+ #  define Z_LFS64
+ #endif
+ 
+@@ -189,7 +189,7 @@ typedef PTRDIFF_TYPE ptrdiff_t;
+ #  define z_off_t long
+ #endif
+ 
+-#if !defined(_WIN32) && defined(Z_LARGE64)
++#if (!defined(_WIN32) || defined(__MINGW32__)) && defined(Z_LARGE64)
+ #  define z_off64_t off64_t
+ #else
+ #  if defined(__MSYS__)
+-- 
+2.45.2
+

@@ -1,0 +1,70 @@
+From 0f4c0a9a4eccefb4b4d99024f8aff732b026e98c Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Fri, 26 Jul 2024 19:51:27 +0900
+Subject: [PATCH 3/3] Don't Add -DWITH_GZFILEOP in pc file when ZLIB_COMPAT is
+ defined.
+
+---
+ CMakeLists.txt  | 4 ++--
+ zlib.pc.cmakein | 5 ++---
+ zlib.pc.in      | 5 ++---
+ 3 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 09da4cc2..2c630669 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1268,8 +1268,8 @@ else()
+ endif()
+ 
+ set(ZLIB_PC ${CMAKE_CURRENT_BINARY_DIR}/zlib${SUFFIX}.pc)
+-if(WITH_GZFILEOP)
+-    set(PKG_CONFIG_CFLAGS "-DWITH_GZFILEOP")
++if(WITH_GZFILEOP AND NOT ZLIB_COMPAT)
++    set(PKG_CONFIG_CFLAGS " -DWITH_GZFILEOP")
+ endif()
+ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
+     ${ZLIB_PC} @ONLY)
+diff --git a/zlib.pc.cmakein b/zlib.pc.cmakein
+index df8bf9f0..57e30b50 100644
+--- a/zlib.pc.cmakein
++++ b/zlib.pc.cmakein
+@@ -2,7 +2,6 @@ prefix=@CMAKE_INSTALL_PREFIX@
+ exec_prefix=${prefix}
+ symbol_prefix=@ZLIB_SYMBOL_PREFIX@
+ libdir=@PC_LIB_INSTALL_DIR@
+-sharedlibdir=${libdir}
+ includedir=@PC_INC_INSTALL_DIR@
+ 
+ Name: zlib@SUFFIX@
+@@ -10,5 +9,5 @@ Description: zlib-ng compression library
+ Version: @ZLIB_FULL_VERSION@
+ 
+ Requires:
+-Libs: -L${libdir} -L${sharedlibdir} -lz@SUFFIX@
+-Cflags: -I${includedir} @PKG_CONFIG_CFLAGS@
++Libs: -L${libdir} -lz@SUFFIX@
++Cflags: -I${includedir}@PKG_CONFIG_CFLAGS@
+diff --git a/zlib.pc.in b/zlib.pc.in
+index 45b35989..9a623d5f 100644
+--- a/zlib.pc.in
++++ b/zlib.pc.in
+@@ -2,7 +2,6 @@ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ symbol_prefix=@symbol_prefix@
+ libdir=@libdir@
+-sharedlibdir=@sharedlibdir@
+ includedir=@includedir@
+ 
+ Name: zlib@SUFFIX@
+@@ -10,5 +9,5 @@ Description: zlib-ng compression library
+ Version: @VERSION@
+ 
+ Requires:
+-Libs: -L${libdir} -L${sharedlibdir} -lz@SUFFIX@
+-Cflags: -I${includedir} @PKG_CONFIG_CFLAGS@
++Libs: -L${libdir} -lz@SUFFIX@
++Cflags: -I${includedir}@PKG_CONFIG_CFLAGS@
+-- 
+2.45.2
+
