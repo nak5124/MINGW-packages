@@ -5,7 +5,7 @@ pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}"
          "${MINGW_PACKAGE_PREFIX}-${_realname}"-libs)
 pkgver=1.8.4
-pkgrel=1
+pkgrel=2
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64' 'clang32')
 url="https://github.com/lhmouse/mcfgthread"
@@ -19,8 +19,16 @@ makedepends=(
   "${MINGW_PACKAGE_PREFIX}-headers"
   "git"
 )
-source=("git+https://github.com/lhmouse/mcfgthread.git#commit=${_commit}")
-sha256sums=('SKIP')
+source=("git+https://github.com/lhmouse/mcfgthread.git#commit=${_commit}"
+        0001-thread-Don-t-enable-fninit-on-environments-where-the.patch)
+sha256sums=('89229a6968c832a984baad495d2baeb6ec41314863647c89e4192f424716503a'
+            'b9a3809ca556402a641b1428b303afff862b971b4fb25ecde285bcab83c53d8e')
+
+prepare() {
+  cd "${srcdir}/${_realname}"
+
+  patch -p1 -i "${srcdir}/0001-thread-Don-t-enable-fninit-on-environments-where-the.patch"
+}
 
 build() {
   [[ -d "${srcdir}/build-${MSYSTEM}" ]] && rm -rf "${srcdir}/build-${MSYSTEM}"

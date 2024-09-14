@@ -1,0 +1,40 @@
+From 968376c4378efd385c6da3f67ca12f0b544495b8 Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Sat, 14 Sep 2024 22:07:46 +0900
+Subject: [PATCH] thread: Don't enable fninit on environments where the long
+ double is 64-bit.
+
+---
+ mcfgthread/thread.c         | 2 +-
+ test/thread_x87_precision.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mcfgthread/thread.c b/mcfgthread/thread.c
+index 10cf0a2..ed971b6 100644
+--- a/mcfgthread/thread.c
++++ b/mcfgthread/thread.c
+@@ -23,7 +23,7 @@ do_win32_thread_thunk(LPVOID param)
+      * `CreateThread()` returns from the other thread.  */
+     _MCF_atomic_store_32_rlx(&(self->__tid), (int32_t) _MCF_thread_self_tid());
+ 
+-#if defined __i386__ || defined __amd64__
++#if (defined __i386__ || defined __amd64__) && __SIZEOF_DOUBLE__ > 8
+     /* Set x87 precision to 64-bit mantissa (GNU `long double` format).  */
+     __asm__ volatile ("fninit");
+ #endif  /* x86  */
+diff --git a/test/thread_x87_precision.c b/test/thread_x87_precision.c
+index d92b6ce..41ce498 100644
+--- a/test/thread_x87_precision.c
++++ b/test/thread_x87_precision.c
+@@ -14,7 +14,7 @@ static
+ void
+ thread_proc(_MCF_thread* self)
+   {
+-#if defined __i386__ || defined __amd64__
++#if (defined __i386__ || defined __amd64__) && __SIZEOF_DOUBLE__ > 8
+     __MCF_STATIC_ASSERT(sizeof(long double) > 8);
+     static volatile long double eps = 0x0.000000000000001p0L;
+     static volatile long double ep1 = 0x1.000000000000001p0L;
+-- 
+2.46.0
+
