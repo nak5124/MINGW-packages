@@ -1,5 +1,16 @@
 --- a/libiberty/unlink-if-ordinary.c
 +++ b/libiberty/unlink-if-ordinary.c
+@@ -48,6 +48,10 @@
+ #include <sys/stat.h>
+ #endif
+ 
++#ifdef _WIN32
++#include <string.h>
++#endif
++
+ #include "libiberty.h"
+ 
+ #ifndef S_ISLNK
 @@ -62,6 +62,12 @@ was made to unlink the file because it is special.
  int
  unlink_if_ordinary (const char *name)

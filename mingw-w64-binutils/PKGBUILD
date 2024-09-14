@@ -6,7 +6,7 @@ _realname=binutils
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 pkgver=2.43.1
-pkgrel=1
+pkgrel=2
 pkgdesc="A set of programs to assemble and manipulate binary and object files (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64')
@@ -41,7 +41,7 @@ sha256sums=('becaac5d295e037587b63a42fad57fe3d9d7b83f478eb24b67f9eec5d0f1872f'
             '0b6e1b4c72aa0af0627a75df2bd85774e21a8528deb684c0403c57ece1746199'
             'd584f1cd9e94cba0e9b27625c4acc8ad5242cd625c9b44839d42fc116072568c'
             'a094660ec95996c00b598429843b7869037732146442af567ada9f539bd40480'
-            '7ccbd418695733c50966068fa9755a6abb156f53af23701d2bc097c63e9e0030'
+            '5a6e476846879494e25fab52aa2cc6896839015490de35b436f0d57b92773a7f'
             '604628156c08f3e361de60329af250fab6839e23e61e289f8369a7e18a04e277')
 validpgpkeys=('EAF1C276A747E9ED86210CBAC3126D3B4AE55E93'  # Tristan Gingold <gingold@adacore.com>
               '3A24BC1E8FB409FA9F14371813FCEF89DD9E3C4F') # Nick Clifton <nickc@redhat.com>
