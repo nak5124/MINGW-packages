@@ -4,7 +4,7 @@ _realname=windows-default-manifest
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgver=6.4
-pkgrel=4
+pkgrel=5
 pkgdesc='Default Windows application manifest (mingw-w64)'
 url='https://cygwin.com/'
 arch=('any')
@@ -12,8 +12,15 @@ mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64' 'clang32')
 license=('BSD')
 makedepends=('git' "${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-autotools")
 _GIT_TAG="release-6_4"
-source=("git+https://sourceware.org/git/cygwin-apps/${_realname}.git#tag=${_GIT_TAG}")
-sha256sums=('SKIP')
+source=("git+https://sourceware.org/git/cygwin-apps/${_realname}.git#tag=${_GIT_TAG}"
+        utf-8.diff)
+sha256sums=('SKIP'
+            '27daf455faf736e28f4921c14f83d0b2782b479d537d77e5a6320712ddafb17a')
+
+prepare () {
+  cd "${srcdir}"/${_realname}
+  patch -p1 -i ${srcdir}/utf-8.diff
+}
 
 build() {
   [[ -d ${srcdir}/build-${MINGW_CHOST} ]] && rm -rf ${srcdir}/build-${MINGW_CHOST}
