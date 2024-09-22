@@ -1,7 +1,7 @@
-From 11632fb54059d8a68c241c3a9d15713dd20a1eb1 Mon Sep 17 00:00:00 2001
+From 28a9276cafd2197e108ef5fa771a09a0bba0d800 Mon Sep 17 00:00:00 2001
 From: Liu Hao <lh_mouse@126.com>
 Date: Wed, 6 May 2020 21:49:18 +0800
-Subject: [PATCH 07/11] libgomp: Don't hard-code MS printf attributes
+Subject: [PATCH 07/15] libgomp: Don't hard-code MS printf attributes
 
 ---
  libgomp/libgomp.h | 13 ++++++++++---
@@ -49,5 +49,5 @@ index 089393846d1..1edeb51e071 100644
  struct gomp_task;
  struct gomp_taskgroup;
 -- 
-2.46.0
+2.46.1
 

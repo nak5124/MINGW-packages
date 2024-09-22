@@ -1,7 +1,7 @@
-From 6103127071c2da7bc7d327468fa2e3aff9bf8b70 Mon Sep 17 00:00:00 2001
+From 5ffb752c7a9886b2c706d66226d7200cea7412a3 Mon Sep 17 00:00:00 2001
 From: Kai Tietz <ktietz@anaconda.com>
 Date: Wed, 21 Apr 2021 07:54:59 +0200
-Subject: [PATCH 10/11] add -m(no-)align-vector-insn option for i386
+Subject: [PATCH 10/15] add -m(no-)align-vector-insn option for i386
 
 ---
  gcc/config/i386/i386-options.cc |  9 +++++--
@@ -65,13 +65,13 @@ index d5f793a9e8b..0267a6f5b9f 100644
  Target
  Set the FTZ and DAZ Flags.
 diff --git a/gcc/config/i386/mingw32.h b/gcc/config/i386/mingw32.h
-index 7753affd36d..a3a22310425 100644
+index 1739464f6f0..c964b0d0f45 100644
 --- a/gcc/config/i386/mingw32.h
 +++ b/gcc/config/i386/mingw32.h
 @@ -30,7 +30,7 @@ along with GCC; see the file COPYING3.  If not see
  #define TARGET_SUBTARGET_DEFAULT \
  	(MASK_80387 | MASK_IEEE_FP | MASK_FLOAT_RETURNS \
- 	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE \
+ 	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE | MASK_LONG_DOUBLE_64 \
 -	 | MASK_MS_BITFIELD_LAYOUT)
 +	 | MASK_MS_BITFIELD_LAYOUT | MASK_NO_ALIGN_VECTOR_INSN)
  
@@ -187,5 +187,5 @@ index 1bf50726e83..c8629383343 100644
    [(set (match_operand:V2DF 0 "nonimmediate_operand")
  	(vec_concat:V2DF
 -- 
-2.46.0
+2.46.1
 

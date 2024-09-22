@@ -1,7 +1,7 @@
-From 78ecc3bd9d03e3d8e69258c2c78bd904c3db0d16 Mon Sep 17 00:00:00 2001
+From 2e85d03ce54ae52f6ac055210ca4313bb84b0a0d Mon Sep 17 00:00:00 2001
 From: Olivier Michel <Olivier.Michel@cyberbotics.com>
 Date: Fri, 31 May 2019 15:07:06 +0200
-Subject: [PATCH 05/11] Handle spaces in path for default manifest
+Subject: [PATCH 05/15] Handle spaces in path for default manifest
 
 ---
  gcc/gcc.cc | 9 +++++----
@@ -56,5 +56,5 @@ index 728332b8153..b12169a0acc 100644
      *retval_nonnull = funcval != NULL;
  
 -- 
-2.46.0
+2.46.1
 

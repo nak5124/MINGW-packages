@@ -1,11 +1,12 @@
-From 70fb1fc357c96b512a5327219c9f769f05cba8b1 Mon Sep 17 00:00:00 2001
+From 3b9ac613b24c834eb421a0c59779b5db02d35f6d Mon Sep 17 00:00:00 2001
 From: Yuta Nakai <nak5124@live.jp>
 Date: Thu, 12 Sep 2024 22:25:19 +0900
-Subject: [PATCH 01/11] mingw-w64: Enable 64bit long double.
+Subject: [PATCH 01/15] mingw-w64: Enable 64bit long double.
 
 ---
- gcc/config/i386/cygming.h      | 4 +++-
+ gcc/config/i386/cygming.h      | 2 ++
  gcc/config/i386/mingw-w64.h    | 6 ++++++
+ gcc/config/i386/mingw32.h      | 2 +-
  libgcc/soft-fp/extendhfxf2.c   | 4 ++++
  libgcc/soft-fp/extendxftf2.c   | 4 ++++
  libgcc/soft-fp/fixxfbitint.c   | 4 ++++
@@ -13,18 +14,15 @@ Subject: [PATCH 01/11] mingw-w64: Enable 64bit long double.
  libgcc/soft-fp/trunctfxf2.c    | 4 ++++
  libgcc/soft-fp/truncxfbf2.c    | 4 ++++
  libgcc/soft-fp/truncxfhf2.c    | 4 ++++
- 9 files changed, 37 insertions(+), 1 deletion(-)
+ 10 files changed, 37 insertions(+), 1 deletion(-)
 
 diff --git a/gcc/config/i386/cygming.h b/gcc/config/i386/cygming.h
-index 1af5bc380a5..60fcb5dd708 100644
+index 1af5bc380a5..47ef7f8d79d 100644
 --- a/gcc/config/i386/cygming.h
 +++ b/gcc/config/i386/cygming.h
-@@ -266,11 +266,13 @@ do {						\
- #undef TARGET_SUBTARGET_DEFAULT
- #define TARGET_SUBTARGET_DEFAULT \
+@@ -268,9 +268,11 @@ do {						\
  	(MASK_80387 | MASK_IEEE_FP | MASK_FLOAT_RETURNS \
--	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE)
-+	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE | MASK_LONG_DOUBLE_64)
+ 	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE)
  
 +#if 0
  #undef TARGET_SUBTARGET64_DEFAULT
@@ -48,6 +46,19 @@ index 0a9986c44d4..1a9e96b1192 100644
 +#define TARGET_LONG_DOUBLE_64 1
 +#undef LONG_DOUBLE_TYPE_SIZE
 +#define LONG_DOUBLE_TYPE_SIZE 64
+diff --git a/gcc/config/i386/mingw32.h b/gcc/config/i386/mingw32.h
+index 7753affd36d..1739464f6f0 100644
+--- a/gcc/config/i386/mingw32.h
++++ b/gcc/config/i386/mingw32.h
+@@ -29,7 +29,7 @@ along with GCC; see the file COPYING3.  If not see
+ #undef TARGET_SUBTARGET_DEFAULT
+ #define TARGET_SUBTARGET_DEFAULT \
+ 	(MASK_80387 | MASK_IEEE_FP | MASK_FLOAT_RETURNS \
+-	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE \
++	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE | MASK_LONG_DOUBLE_64 \
+ 	 | MASK_MS_BITFIELD_LAYOUT)
+ 
+ #ifndef TARGET_USING_MCFGTHREAD
 diff --git a/libgcc/soft-fp/extendhfxf2.c b/libgcc/soft-fp/extendhfxf2.c
 index 1d80f0fc55a..5b8573d4e2f 100644
 --- a/libgcc/soft-fp/extendhfxf2.c
@@ -182,5 +193,5 @@ index b3c6629c409..aa1dd51d563 100644
 +
 +#endif
 -- 
-2.46.0
+2.46.1
 

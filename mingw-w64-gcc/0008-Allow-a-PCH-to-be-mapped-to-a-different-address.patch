@@ -1,7 +1,7 @@
-From 3eb9e8bbf3ab11a8cf826f75a8fb3d58c82bfb5a Mon Sep 17 00:00:00 2001
+From 695bd28fc1f6e92b5734e3064c2e66a3839fb373 Mon Sep 17 00:00:00 2001
 From: LIU Hao <lh_mouse@126.com>
 Date: Wed, 11 May 2022 22:42:53 +0800
-Subject: [PATCH 08/11] Allow a PCH to be mapped to a different address
+Subject: [PATCH 08/15] Allow a PCH to be mapped to a different address
 
 First, try mapping the PCH to its original address. If that fails, try
 letting the system choose one; the PCH can be relocated thereafter.
@@ -72,5 +72,5 @@ index 42563982e42..2dc57cfdcc7 100644
  }
  
 -- 
-2.46.0
+2.46.1
 

@@ -1,7 +1,7 @@
-From 5cfd1eb2bc5db8f3fb997f2ed52bf85640c3c140 Mon Sep 17 00:00:00 2001
+From 33a737871cff875eeebdb33c885ef994a52ef7c1 Mon Sep 17 00:00:00 2001
 From: Ray Donnelly <mingw.android@gmail.com>
 Date: Wed, 5 Aug 2015 23:36:07 +0100
-Subject: [PATCH 03/11] Windows: Follow Posix dir-exists semantics more closely
+Subject: [PATCH 03/15] Windows: Follow Posix dir-exists semantics more closely
 
 Make Windows behave the same as Posix in the consideration
 of whether folder "/doesnt-exist/.." is a valid
@@ -127,5 +127,5 @@ index c61df339e20..e7b88dba065 100644
    if (file->fd != -1)
      {
 -- 
-2.46.0
+2.46.1
 

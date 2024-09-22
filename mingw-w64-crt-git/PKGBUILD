@@ -3,7 +3,7 @@
 _realname=crt
 pkgbase=mingw-w64-${_realname}-git
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
-pkgver=12.0.0.r419.g2b19d30c1
+pkgver=12.0.0.r435.g79092ba64
 pkgrel=1
 pkgdesc='MinGW-w64 CRT for Windows (mingw-w64)'
 arch=('any')
@@ -21,7 +21,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
 provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 options=('!strip' '!buildflags' '!emptydirs')
-_commit='2b19d30c1c0452217d051cf84e27f5d0ef63ce7a'
+_commit='79092ba64ceac64fef9716dd70210675a5082f93'
 source=("mingw-w64"::"git+https://github.com/nak5124/MinGW-w64.git#commit=$_commit")
 sha256sums=('SKIP')
 

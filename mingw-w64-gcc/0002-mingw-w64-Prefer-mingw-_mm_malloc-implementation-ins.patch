@@ -1,7 +1,7 @@
-From 61697f51c012b25636f81581c783e9a0ed01d9d3 Mon Sep 17 00:00:00 2001
+From df9d27ad115c249a5c9239a08adff5398495beed Mon Sep 17 00:00:00 2001
 From: Yuta Nakai <nak5124@live.jp>
 Date: Thu, 12 Sep 2024 22:31:03 +0900
-Subject: [PATCH 02/11] mingw-w64: Prefer mingw _mm_malloc implementation
+Subject: [PATCH 02/15] mingw-w64: Prefer mingw _mm_malloc implementation
  instead of gcc.
 
 ---
@@ -28,5 +28,5 @@ index 7e2ff626a9a..26db5759b56 100644
  
  #endif /* _MM_MALLOC_H_INCLUDED */
 -- 
-2.46.0
+2.46.1
 

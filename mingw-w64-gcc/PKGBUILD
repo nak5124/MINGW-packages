@@ -41,7 +41,7 @@ else
   _sourcedir=${_realname}-${_version}-${_snapshot}
   _url=https://gcc.gnu.org/pub/gcc/snapshots/${_version}-${_snapshot}
 fi
-pkgrel=3
+pkgrel=5
 pkgdesc="GCC for the MinGW-w64"
 arch=('any')
 mingw_arch=('ucrt64')
@@ -81,21 +81,27 @@ source=(${_url}/${_sourcedir}.tar.xz{,.sig}
         0008-Allow-a-PCH-to-be-mapped-to-a-different-address.patch
         0009-Enable-diagnostic-color-on-msys2-shell.patch
         0010-add-m-no-align-vector-insn-option-for-i386.patch
-        0011-mingw-w64-Don-t-expect-mingw-symlink.patch)
+        0011-mingw-w64-Don-t-expect-mingw-symlink.patch
+        0012-mingw-w64-Don-t-activate-__USE_MINGW_ANSI_STDIO.patch
+        0013-mingw-w64-Always-assume-UCRT.patch
+        0014-mingw-w64-When-building-executables-not-DLLs-add-tsa.patch)
 sha256sums=('a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9'
             'SKIP'
             'bce81824fc89e5e62cca350de4c17a27e27a18a1a1ad5ca3492aec1fc5af3234'
-            'c8f829c68991e72bfda248289c4e4084813aec9101fa6c93260ec7b1461f8b22'
-            '2ebfc6b6e25cd869db42d2b795a3514f0eefea1673e0a880f4751fa9c00d96e4'
-            '704808bc8f0b8237f9dc18a236da44b80ae48cc0ef45611268e683d60c0b5797'
-            'b21525995e6e7ffe9248e0a1b76bc33a45d12d2d15f40d27b73797f14f4007d5'
-            '62d7dbaf3c04562ee6773a82e1ce0a8dd4bd9b1e2e267d85a91767412e09dbca'
-            '4f9aefea313faf0149df8c306f8c3137aecbed752c03d6bdf0444363c8b76397'
-            'eb94b03fc23f5f2ea3302f65dbc735ea2a76a76c6f1218c1832cb50ecd98709c'
-            '965d46f98fd56cb894c54cb4ef623422e4d6dd72e55eec9a4a8254add2497053'
-            '45c52cf5e4dc12852d300ae5b43ed86efca0d9d3075bc923b90bc30f69c14555'
-            '96cac2c4b56938ce545d216b1ff27031103dd5f1a779e5d3f3474c88b687871d'
-            'cefeab6b15079abbe2a044582c9d0af21e749489e2938228cd651802de1d23a5')
+            '61e7b4b02a7770ba5dbff584a38010cf932a924008c5c16f9d344bdbb23c9a51'
+            '923250169dbecd7eb149d1d547c341b579e6eaf6ccb4926781a1d860cc16d9de'
+            '18730d346d51098b13d5ac3580d239dee5696e47b31b1a3ec1955aa6284738a5'
+            '19e5e8de6182e8867fc5b504e9e4f93e8f78bc46eb91d7284f7d43ca3507b521'
+            'ea2f0982eee55759cd35e4634d2ad39c6b54e27c62ab8de2f6098e0837ba5ab9'
+            '06f72f32facf0011f594ada7678e28507a213fbd461044e2cd1901545d76b53f'
+            'c5574a5dee11fb7f07975fd8297a762c512e8a93a22be14503274b3209c14db5'
+            '4bf9633542b6b22a7597b71f6cc1053ea78de84fe6323e90f068ed19bfe072d2'
+            '5969fb589a903619255b3145150c9516ae1046aeff8bdf6c272f0c698bc41428'
+            'fcae15d5663bdd52cdc0932a79b77c31ed161e12e4827f36fb242d71c65a1028'
+            '38ce8e659d49e7b11f1869aa9b13333adce951318f0b3f6c5036e827266f86ca'
+            '2a0eb2eb199be0fdea56bea5df9ff7a66978135d1a1c42889055eec8da2fad85'
+            'e5309e8217ae76206b8fb313ea5ece00d478cd1c2e30441bd4c2c87a7e49511e'
+            'e392a8794faafb737a29c00f1feea0d0698579c6d4e07e96e789d04aa76f81be')
 validpgpkeys=(F3691687D867B81B51CE07D9BBE43771487328A9  # bpiotrowski@archlinux.org
               86CFFCA918CF3AF47147588051E8B148A9999C34  # evangelos@foutrelis.com
               13975A70E63C361C73AE69EF6EEB81F8981C74C7  # richard.guenther@gmail.com
@@ -134,7 +140,10 @@ prepare() {
     0008-Allow-a-PCH-to-be-mapped-to-a-different-address.patch \
     0009-Enable-diagnostic-color-on-msys2-shell.patch \
     0010-add-m-no-align-vector-insn-option-for-i386.patch \
-    0011-mingw-w64-Don-t-expect-mingw-symlink.patch
+    0011-mingw-w64-Don-t-expect-mingw-symlink.patch \
+    0012-mingw-w64-Don-t-activate-__USE_MINGW_ANSI_STDIO.patch \
+    0013-mingw-w64-Always-assume-UCRT.patch \
+    0014-mingw-w64-When-building-executables-not-DLLs-add-tsa.patch
 
   # change hardcoded /mingw prefix to the real prefix .. isn't this rubbish?
   # it might work at build time and could be important there but beyond that?!
@@ -221,6 +230,7 @@ build() {
     --with-libiconv \
     --with-system-zlib \
     --with-{gmp,mpfr,mpc,isl}=${MINGW_PREFIX} \
+    --with-local-prefix=${MINGW_PREFIX}/local \
     --with-pkgversion="Rev${pkgrel}, Built by MSYS2 project" \
     --with-bugurl="https://github.com/msys2/MINGW-packages/issues" \
     --with-gnu-as \
