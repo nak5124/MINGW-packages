@@ -1,0 +1,197 @@
+From 3b9ac613b24c834eb421a0c59779b5db02d35f6d Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Thu, 12 Sep 2024 22:25:19 +0900
+Subject: [PATCH 01/15] mingw-w64: Enable 64bit long double.
+
+---
+ gcc/config/i386/cygming.h      | 2 ++
+ gcc/config/i386/mingw-w64.h    | 6 ++++++
+ gcc/config/i386/mingw32.h      | 2 +-
+ libgcc/soft-fp/extendhfxf2.c   | 4 ++++
+ libgcc/soft-fp/extendxftf2.c   | 4 ++++
+ libgcc/soft-fp/fixxfbitint.c   | 4 ++++
+ libgcc/soft-fp/floatbitintxf.c | 4 ++++
+ libgcc/soft-fp/trunctfxf2.c    | 4 ++++
+ libgcc/soft-fp/truncxfbf2.c    | 4 ++++
+ libgcc/soft-fp/truncxfhf2.c    | 4 ++++
+ 10 files changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/gcc/config/i386/cygming.h b/gcc/config/i386/cygming.h
+index 1af5bc380a5..47ef7f8d79d 100644
+--- a/gcc/config/i386/cygming.h
++++ b/gcc/config/i386/cygming.h
+@@ -268,9 +268,11 @@ do {						\
+ 	(MASK_80387 | MASK_IEEE_FP | MASK_FLOAT_RETURNS \
+ 	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE)
+ 
++#if 0
+ #undef TARGET_SUBTARGET64_DEFAULT
+ #define TARGET_SUBTARGET64_DEFAULT \
+ 	MASK_128BIT_LONG_DOUBLE
++#endif
+ 
+ /* This is how to output an assembler line
+    that says to advance the location counter
+diff --git a/gcc/config/i386/mingw-w64.h b/gcc/config/i386/mingw-w64.h
+index 0a9986c44d4..1a9e96b1192 100644
+--- a/gcc/config/i386/mingw-w64.h
++++ b/gcc/config/i386/mingw-w64.h
+@@ -135,3 +135,9 @@ along with GCC; see the file COPYING3.  If not see
+    original mingw32.  */
+ #undef TARGET_LIBC_HAS_FUNCTION
+ #define TARGET_LIBC_HAS_FUNCTION gnu_libc_has_function
++
++/* Enable 64bit long double */
++#undef TARGET_LONG_DOUBLE_64
++#define TARGET_LONG_DOUBLE_64 1
++#undef LONG_DOUBLE_TYPE_SIZE
++#define LONG_DOUBLE_TYPE_SIZE 64
+diff --git a/gcc/config/i386/mingw32.h b/gcc/config/i386/mingw32.h
+index 7753affd36d..1739464f6f0 100644
+--- a/gcc/config/i386/mingw32.h
++++ b/gcc/config/i386/mingw32.h
+@@ -29,7 +29,7 @@ along with GCC; see the file COPYING3.  If not see
+ #undef TARGET_SUBTARGET_DEFAULT
+ #define TARGET_SUBTARGET_DEFAULT \
+ 	(MASK_80387 | MASK_IEEE_FP | MASK_FLOAT_RETURNS \
+-	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE \
++	 | MASK_STACK_PROBE | MASK_ALIGN_DOUBLE | MASK_LONG_DOUBLE_64 \
+ 	 | MASK_MS_BITFIELD_LAYOUT)
+ 
+ #ifndef TARGET_USING_MCFGTHREAD
+diff --git a/libgcc/soft-fp/extendhfxf2.c b/libgcc/soft-fp/extendhfxf2.c
+index 1d80f0fc55a..5b8573d4e2f 100644
+--- a/libgcc/soft-fp/extendhfxf2.c
++++ b/libgcc/soft-fp/extendhfxf2.c
+@@ -26,6 +26,8 @@
+    License along with the GNU C Library; if not, see
+    <http://www.gnu.org/licenses/>.  */
+ 
++#if LIBGCC2_HAS_XF_MODE
++
+ #define FP_NO_EXACT_UNDERFLOW
+ #include "soft-fp.h"
+ #include "half.h"
+@@ -51,3 +53,5 @@ __extendhfxf2 (HFtype a)
+ 
+   return r;
+ }
++
++#endif
+diff --git a/libgcc/soft-fp/extendxftf2.c b/libgcc/soft-fp/extendxftf2.c
+index 4d56b1d9d08..c4fb137953a 100644
+--- a/libgcc/soft-fp/extendxftf2.c
++++ b/libgcc/soft-fp/extendxftf2.c
+@@ -26,6 +26,8 @@
+    License along with the GNU C Library; if not, see
+    <https://www.gnu.org/licenses/>.  */
+ 
++#if LIBGCC2_HAS_XF_MODE
++
+ #include "soft-fp.h"
+ #include "extended.h"
+ #include "quad.h"
+@@ -50,3 +52,5 @@ __extendxftf2 (XFtype a)
+ 
+   return r;
+ }
++
++#endif
+diff --git a/libgcc/soft-fp/fixxfbitint.c b/libgcc/soft-fp/fixxfbitint.c
+index de79721de65..ca60dccb13f 100644
+--- a/libgcc/soft-fp/fixxfbitint.c
++++ b/libgcc/soft-fp/fixxfbitint.c
+@@ -24,6 +24,8 @@ a copy of the GCC Runtime Library Exception along with this program;
+ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+ <http://www.gnu.org/licenses/>.  */
+ 
++#if LIBGCC2_HAS_XF_MODE
++
+ #include "soft-fp.h"
+ #include "extended.h"
+ #include "bitint.h"
+@@ -80,3 +82,5 @@ __fixxfbitint (UBILtype *r, SItype rprec, XFtype a)
+   FP_TO_BITINT (r, rn, arprec, shift, rv, rsize, rsigned, ovf, TI);
+ }
+ #endif
++
++#endif
+diff --git a/libgcc/soft-fp/floatbitintxf.c b/libgcc/soft-fp/floatbitintxf.c
+index 4731eb341d5..9b0391d6103 100644
+--- a/libgcc/soft-fp/floatbitintxf.c
++++ b/libgcc/soft-fp/floatbitintxf.c
+@@ -24,6 +24,8 @@ a copy of the GCC Runtime Library Exception along with this program;
+ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+ <http://www.gnu.org/licenses/>.  */
+ 
++#if LIBGCC2_HAS_XF_MODE
++
+ #include "soft-fp.h"
+ #include "extended.h"
+ #include "bitint.h"
+@@ -72,3 +74,5 @@ __floatbitintxf (const UBILtype *i, SItype iprec)
+   return a;
+ }
+ #endif
++
++#endif
+diff --git a/libgcc/soft-fp/trunctfxf2.c b/libgcc/soft-fp/trunctfxf2.c
+index 96ad48d8471..4e707c46184 100644
+--- a/libgcc/soft-fp/trunctfxf2.c
++++ b/libgcc/soft-fp/trunctfxf2.c
+@@ -26,6 +26,8 @@
+    License along with the GNU C Library; if not, see
+    <https://www.gnu.org/licenses/>.  */
+ 
++#if LIBGCC2_HAS_XF_MODE
++
+ #include "soft-fp.h"
+ #include "extended.h"
+ #include "quad.h"
+@@ -50,3 +52,5 @@ __trunctfxf2 (TFtype a)
+ 
+   return r;
+ }
++
++#endif
+diff --git a/libgcc/soft-fp/truncxfbf2.c b/libgcc/soft-fp/truncxfbf2.c
+index fbff063be82..6c6862c9da3 100644
+--- a/libgcc/soft-fp/truncxfbf2.c
++++ b/libgcc/soft-fp/truncxfbf2.c
+@@ -26,6 +26,8 @@
+    License along with the GNU C Library; if not, see
+    <http://www.gnu.org/licenses/>.  */
+ 
++#if LIBGCC2_HAS_XF_MODE
++
+ #include "soft-fp.h"
+ #include "brain.h"
+ #include "extended.h"
+@@ -50,3 +52,5 @@ __truncxfbf2 (XFtype a)
+ 
+   return r;
+ }
++
++#endif
+diff --git a/libgcc/soft-fp/truncxfhf2.c b/libgcc/soft-fp/truncxfhf2.c
+index b3c6629c409..aa1dd51d563 100644
+--- a/libgcc/soft-fp/truncxfhf2.c
++++ b/libgcc/soft-fp/truncxfhf2.c
+@@ -26,6 +26,8 @@
+    License along with the GNU C Library; if not, see
+    <http://www.gnu.org/licenses/>.  */
+ 
++#if LIBGCC2_HAS_XF_MODE
++
+ #include "soft-fp.h"
+ #include "half.h"
+ #include "extended.h"
+@@ -50,3 +52,5 @@ __truncxfhf2 (XFtype a)
+ 
+   return r;
+ }
++
++#endif
+-- 
+2.46.1
+

@@ -1,0 +1,32 @@
+From df9d27ad115c249a5c9239a08adff5398495beed Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Thu, 12 Sep 2024 22:31:03 +0900
+Subject: [PATCH 02/15] mingw-w64: Prefer mingw _mm_malloc implementation
+ instead of gcc.
+
+---
+ gcc/config/i386/gmm_malloc.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/gcc/config/i386/gmm_malloc.h b/gcc/config/i386/gmm_malloc.h
+index 7e2ff626a9a..26db5759b56 100644
+--- a/gcc/config/i386/gmm_malloc.h
++++ b/gcc/config/i386/gmm_malloc.h
+@@ -29,6 +29,7 @@
+ #include <errno.h>
+ #endif
+ 
++#ifndef __MINGW32__
+ static __inline__ void * 
+ _mm_malloc (size_t __size, size_t __align)
+ {
+@@ -74,5 +75,6 @@ _mm_free (void *__aligned_ptr)
+   if (__aligned_ptr)
+     free (((void **) __aligned_ptr)[-1]);
+ }
++#endif
+ 
+ #endif /* _MM_MALLOC_H_INCLUDED */
+-- 
+2.46.1
+

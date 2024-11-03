@@ -1,8 +1,18 @@
+From 5739612af4deeb8bb7511a00f6c5081fd5d95085 Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Thu, 12 Sep 2024 22:46:13 +0900
+Subject: [PATCH 09/15] Enable diagnostic color on msys2 shell.
+
+Taken from https://raw.githubusercontent.com/msys2/MINGW-packages/master/mingw-w64-gcc/0140-gcc-diagnostic-color.patch.
+---
+ gcc/diagnostic-color.cc | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
+
 diff --git a/gcc/diagnostic-color.cc b/gcc/diagnostic-color.cc
-index 640adfad5..f5eaf142a 100644
+index f01a0fc2e37..1dccf6993f6 100644
 --- a/gcc/diagnostic-color.cc
 +++ b/gcc/diagnostic-color.cc
-@@ -211,9 +211,38 @@ should_colorize (void)
+@@ -216,9 +216,38 @@ should_colorize (void)
    HANDLE h;
    DWORD m;
  
@@ -42,3 +52,6 @@ index 640adfad5..f5eaf142a 100644
  #else
    char const *t = getenv ("TERM");
    /* emacs M-x shell sets TERM="dumb".  */
+-- 
+2.46.1
+

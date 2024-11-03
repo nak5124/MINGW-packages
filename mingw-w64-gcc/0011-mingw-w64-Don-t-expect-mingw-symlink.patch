@@ -1,0 +1,25 @@
+From 317262d9e721eed76b9cee0429d7115b4828a875 Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Thu, 12 Sep 2024 23:10:08 +0900
+Subject: [PATCH 11/15] mingw-w64: Don't expect /mingw symlink.
+
+---
+ configure | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure b/configure
+index 3b0abeb8b2e..a98b3480f66 100755
+--- a/configure
++++ b/configure
+@@ -10536,7 +10536,7 @@ case "$target" in
+   x86_64-*mingw* | *-w64-mingw*)
+   # MinGW-w64 does not use newlib, nor does it use winsup. It may,
+   # however, use a symlink named 'mingw' in ${prefix} .
+-    FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -L${prefix}/${target}/lib -L${prefix}/mingw/lib -isystem ${prefix}/${target}/include -isystem ${prefix}/mingw/include'
++    FLAGS_FOR_TARGET=$FLAGS_FOR_TARGET' -L${prefix}/${target}/lib -L${prefix}/lib -isystem ${prefix}/${target}/include -isystem ${prefix}/include'
+     ;;
+   *-mingw*)
+   # MinGW can't be handled as Cygwin above since it does not use newlib.
+-- 
+2.46.1
+

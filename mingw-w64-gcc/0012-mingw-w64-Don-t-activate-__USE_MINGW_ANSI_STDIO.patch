@@ -1,0 +1,47 @@
+From 43ef0cd4d26053fb9ec5e69dfeb3a6e4d2d7903a Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Sun, 15 Sep 2024 22:18:48 +0900
+Subject: [PATCH 12/15] mingw-w64: Don't activate __USE_MINGW_ANSI_STDIO.
+
+---
+ gcc/config/i386/xm-mingw32.h                    | 9 ---------
+ libstdc++-v3/config/os/mingw32-w64/os_defines.h | 6 ------
+ 2 files changed, 15 deletions(-)
+
+diff --git a/gcc/config/i386/xm-mingw32.h b/gcc/config/i386/xm-mingw32.h
+index 9159e8f2d4e..f38296e3dbd 100644
+--- a/gcc/config/i386/xm-mingw32.h
++++ b/gcc/config/i386/xm-mingw32.h
+@@ -28,12 +28,3 @@ along with GCC; see the file COPYING3.  If not see
+ 
+ /*  The st_ino field of struct stat is always 0.  */
+ #define HOST_LACKS_INODE_NUMBERS
+-
+-#ifdef __MINGW32__
+-#undef __USE_MINGW_ANSI_STDIO
+-#define __USE_MINGW_ANSI_STDIO 1
+-#else
+-/* MSVCRT does not support the "ll" format specifier for printing
+-   "long long" values.  Instead, we use "I64".  */
+-#define HOST_LONG_LONG_FORMAT "I64"
+-#endif
+diff --git a/libstdc++-v3/config/os/mingw32-w64/os_defines.h b/libstdc++-v3/config/os/mingw32-w64/os_defines.h
+index ae2ca3bd9da..280208da514 100644
+--- a/libstdc++-v3/config/os/mingw32-w64/os_defines.h
++++ b/libstdc++-v3/config/os/mingw32-w64/os_defines.h
+@@ -44,12 +44,6 @@
+ #undef NOMINMAX
+ #define NOMINMAX 1
+ 
+-// Make sure that POSIX printf/scanf functions are activated.  As
+-// libstdc++ depends on POSIX-definitions of those functions, we define
+-// it unconditionally.
+-#undef __USE_MINGW_ANSI_STDIO
+-#define __USE_MINGW_ANSI_STDIO 1
+-
+ #if defined (_GLIBCXX_DLL)
+ #define _GLIBCXX_PSEUDO_VISIBILITY_default __attribute__ ((__dllimport__))
+ #else
+-- 
+2.46.1
+
