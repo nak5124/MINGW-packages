@@ -3,14 +3,14 @@
 _realname=crt
 pkgbase=mingw-w64-${_realname}-git
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
-pkgver=12.0.0.r369.g0d4221712
+pkgver=12.0.0.r514.gfc4df6587
 pkgrel=2
-_commit='0d42217123d3aec0341b79f6d959c76e09648a1e'
+_commit='fc4df65879f9498a2c2ed76e9616b37ce9ee59d2'
 pkgdesc='MinGW-w64 CRT for Windows (mingw-w64)'
 arch=('any')
-mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
+mingw_arch=('ucrt64' 'clang64' 'clangarm64')
 url='https://www.mingw-w64.org/'
-msys2_repository_url="https://sourceforge.net/p/mingw-w64/mingw-w64/ci/master/tree/mingw-w64-crt/"
+msys2_repository_url="https://github.com/nak5124/MinGW-w64"
 license=('spdx:ZPL-2.1')
 groups=("${MINGW_PACKAGE_PREFIX}-toolchain")
 depends=("${MINGW_PACKAGE_PREFIX}-headers-git")
@@ -21,40 +21,33 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
 provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 options=('!strip' '!buildflags' '!emptydirs')
-source=("mingw-w64"::"git+https://git.code.sf.net/p/mingw-w64/mingw-w64#commit=$_commit")
-sha256sums=('9e485504bc32b5b7d7d732388a602749ce4268141d616eb6259777a0da032fe0')
+source=("mingw-w64"::"git+https://github.com/nak5124/MinGW-w64.git#commit=$_commit")
+sha256sums=('SKIP')
 
 pkgver() {
   cd "${srcdir}/mingw-w64"
-  git describe --long ${_commit} | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//g'
+  git describe --long | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//g'
+}
+
+prepare() {
+  cd ${srcdir}/mingw-w64
+  cd mingw-w64-crt && autoreconf
 }
 
 build() {
   declare -a _extra_config
   case "$CARCH" in
-    i686)
-      _extra_config=("--disable-lib64" "--enable-lib32")
-    ;;
     x86_64)
-      _extra_config=("--disable-lib32" "--enable-lib64")
-    ;;
-    armv7)
-      _extra_config=("--disable-lib32" "--disable-lib64" "--enable-libarm32")
+      _extra_config=("--enable-lib64" "--disable-libarm64")
     ;;
     aarch64)
-      _extra_config=("--disable-lib32" "--disable-lib64" "--disable-libarm32" "--enable-libarm64")
+      _extra_config=("--disable-lib64" "--enable-libarm64")
     ;;
   esac
 
   # only clang+lld support this at the moment
   if [[ $MINGW_PACKAGE_PREFIX == *-clang-* ]]; then
     _extra_config+=("--enable-cfguard")
-  fi
-
-  if [[ $MINGW_PACKAGE_PREFIX == *-clang-* ]] || [[ $MINGW_PACKAGE_PREFIX == *-ucrt-* ]]; then
-    _extra_config+=("--with-default-msvcrt=ucrt")
-  else
-    _extra_config+=("--with-default-msvcrt=msvcrt")
   fi
 
   mkdir -p ${srcdir}/build-${MSYSTEM} && cd ${srcdir}/build-${MSYSTEM}
