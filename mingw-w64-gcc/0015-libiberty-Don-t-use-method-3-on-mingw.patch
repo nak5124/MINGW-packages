@@ -1,0 +1,34 @@
+From 23071f5f9506918a8818bf08c53fb424fa5b440d Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Sun, 3 Nov 2024 23:58:43 +0900
+Subject: [PATCH] libiberty: Don't use method 3 on mingw.
+
+---
+ libiberty/lrealpath.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libiberty/lrealpath.c b/libiberty/lrealpath.c
+index c683837dd92..1361adf24fc 100644
+--- a/libiberty/lrealpath.c
++++ b/libiberty/lrealpath.c
+@@ -56,7 +56,7 @@ components will be simplified.  The returned value will be allocated using
+ extern char *canonicalize_file_name (const char *);
+ #endif
+ 
+-#if defined(HAVE_REALPATH)
++#if defined(HAVE_REALPATH) && !defined(__MINGW32__)
+ # if defined (PATH_MAX)
+ #  define REALPATH_LIMIT PATH_MAX
+ # else
+@@ -236,7 +236,7 @@ lrealpath (const char *filename)
+      pathconf()) making it impossible to pass a correctly sized buffer
+      to realpath() (it could always overflow).  On those systems, we
+      skip this.  */
+-#if defined (HAVE_REALPATH) && defined (HAVE_UNISTD_H)
++#if defined (HAVE_REALPATH) && defined (HAVE_UNISTD_H) && !defined(__MINGW32__)
+   {
+     /* Find out the max path size.  */
+     long path_max = pathconf ("/", _PC_PATH_MAX);
+-- 
+2.47.0
+
