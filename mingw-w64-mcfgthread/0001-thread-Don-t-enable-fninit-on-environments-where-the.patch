@@ -1,0 +1,26 @@
+From 62b593b20a1d16bcbd75c7947dc5a644ea95e426 Mon Sep 17 00:00:00 2001
+From: Yuta Nakai <nak5124@live.jp>
+Date: Sun, 3 Nov 2024 21:58:40 +0900
+Subject: [PATCH] thread: Don't enable fninit on environments where the long
+ double is 64-bit.
+
+---
+ mcfgthread/thread.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mcfgthread/thread.c b/mcfgthread/thread.c
+index 296d1ca..025c6d1 100644
+--- a/mcfgthread/thread.c
++++ b/mcfgthread/thread.c
+@@ -23,7 +23,7 @@ do_win32_thread_thunk(LPVOID param)
+      * `CreateThread()` returns from the other thread.  */
+     _MCF_atomic_store_32_rlx(&(self->__tid), (int32_t) _MCF_thread_self_tid());
+ 
+-#if defined __i386__ || defined __amd64__
++#if (defined __i386__ || defined __amd64__) && __SIZEOF_LONG_DOUBLE__ > 8
+     /* Set x87 precision to 64-bit mantissa (GNU `long double` format).  */
+     __asm__ volatile ("fninit");
+ #endif  /* x86  */
+-- 
+2.47.0
+

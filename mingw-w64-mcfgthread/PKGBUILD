@@ -5,7 +5,7 @@ pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}"
          "${MINGW_PACKAGE_PREFIX}-${_realname}"-libs)
 pkgver=1.9.1
-pkgrel=2
+pkgrel=3
 pkgdesc="An efficient gthread implementation, providing C++11 threading support (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -19,8 +19,16 @@ makedepends=(
   "${MINGW_PACKAGE_PREFIX}-headers"
   "git"
 )
-source=("git+https://github.com/lhmouse/mcfgthread.git#tag=v${pkgver%.*}-ga.${pkgver##*.}")
-sha256sums=('1e42831d4c0da24928cdddd695d5b42c4f2699952fd248867328ca6e81d73a2b')
+source=("git+https://github.com/lhmouse/mcfgthread.git#tag=v${pkgver%.*}-ga.${pkgver##*.}"
+        0001-thread-Don-t-enable-fninit-on-environments-where-the.patch)
+sha256sums=('1e42831d4c0da24928cdddd695d5b42c4f2699952fd248867328ca6e81d73a2b'
+            '62a0a7016438d4cad5d10455b6d641da5769623cb6d97f9c4bcedd0657b92de5')
+
+prepare() {
+  cd "${srcdir}/${_realname}"
+
+  patch -p1 -i "${srcdir}/0001-thread-Don-t-enable-fninit-on-environments-where-the.patch"
+}
 
 build() {
   [[ -d "${srcdir}/build-${MSYSTEM}" ]] && rm -rf "${srcdir}/build-${MSYSTEM}"
