@@ -35,7 +35,7 @@ else
   _sourcedir=${_realname}-${_version}-${_snapshot}
   _url=https://gcc.gnu.org/pub/gcc/snapshots/${_version}-${_snapshot}
 fi
-pkgrel=2
+pkgrel=3
 pkgdesc="GCC for the MinGW-w64"
 arch=('any')
 mingw_arch=('ucrt64')
@@ -79,7 +79,8 @@ source=(${_url}/${_sourcedir}.tar.xz{,.sig}
         0012-mingw-w64-Don-t-activate-__USE_MINGW_ANSI_STDIO.patch
         0013-mingw-w64-Always-assume-UCRT.patch
         0014-mingw-w64-When-building-executables-not-DLLs-add-tsa.patch
-        0015-libiberty-Don-t-use-method-3-on-mingw.patch)
+        0015-libiberty-Don-t-use-method-3-on-mingw.patch
+        0016-mingw-w64-Use-libonecore_apise.patch)
 sha256sums=('a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9'
             'SKIP'
             'bce81824fc89e5e62cca350de4c17a27e27a18a1a1ad5ca3492aec1fc5af3234'
@@ -97,7 +98,8 @@ sha256sums=('a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9'
             '2a0eb2eb199be0fdea56bea5df9ff7a66978135d1a1c42889055eec8da2fad85'
             'e5309e8217ae76206b8fb313ea5ece00d478cd1c2e30441bd4c2c87a7e49511e'
             'e392a8794faafb737a29c00f1feea0d0698579c6d4e07e96e789d04aa76f81be'
-            '037f7cd4f5bcca1f92ce83a828fd0505f629e340eb3da6d3056be7391f6b4f3d')
+            '037f7cd4f5bcca1f92ce83a828fd0505f629e340eb3da6d3056be7391f6b4f3d'
+            'b41feb1c9e2ec9c7e8393bb14d6a2b9402f3af4ccdc24300cc8dadf5f70174e1')
 validpgpkeys=(F3691687D867B81B51CE07D9BBE43771487328A9  # bpiotrowski@archlinux.org
               86CFFCA918CF3AF47147588051E8B148A9999C34  # evangelos@foutrelis.com
               13975A70E63C361C73AE69EF6EEB81F8981C74C7  # richard.guenther@gmail.com
@@ -140,7 +142,8 @@ prepare() {
     0012-mingw-w64-Don-t-activate-__USE_MINGW_ANSI_STDIO.patch \
     0013-mingw-w64-Always-assume-UCRT.patch \
     0014-mingw-w64-When-building-executables-not-DLLs-add-tsa.patch \
-    0015-libiberty-Don-t-use-method-3-on-mingw.patch
+    0015-libiberty-Don-t-use-method-3-on-mingw.patch \
+    0016-mingw-w64-Use-libonecore_apise.patch
 
   # change hardcoded /mingw prefix to the real prefix .. isn't this rubbish?
   # it might work at build time and could be important there but beyond that?!
