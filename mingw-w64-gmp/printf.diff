@@ -1,0 +1,33 @@
+--- a/acinclude.m4	2024-11-13 20:47:07.665760200 +0900
++++ b/acinclude.m4	2024-11-13 20:48:38.163040100 +0900
+@@ -3696,6 +3696,8 @@
+   va_list  ap;
+   int      ret;
+ 
++  _set_printf_count_output(1);
++
+   va_start (ap, fmt);
+ 
+   ret = vsnprintf (buf, 4, fmt, ap);
+--- a/printf/doprnt.c	2024-11-13 22:24:46.187809100 +0900
++++ b/printf/doprnt.c	2024-11-13 22:25:04.356718600 +0900
+@@ -164,6 +164,8 @@
+   int      type, fchar, *value, seen_precision;
+   struct doprnt_params_t param;
+ 
++  _set_printf_count_output(1);
++
+   TRACE (printf ("gmp_doprnt \"%s\"\n", orig_fmt));
+ 
+   /* Don't modify orig_ap, if va_list is actually an array and hence call by
+--- a/scanf/doscan.c	2024-11-13 22:25:19.134718700 +0900
++++ b/scanf/doscan.c	2024-11-13 22:25:29.398480100 +0900
+@@ -477,6 +477,8 @@
+   int	      fields = 0;
+   int	      chars = 0;
+ 
++  _set_printf_count_output(1);
++
+   TRACE (printf ("__gmp_doscan \"%s\"\n", orig_fmt);
+ 	 if (funs->scan == (gmp_doscan_scan_t) sscanf)
+ 	   printf ("  s=\"%s\"\n", * (const char **) data));
