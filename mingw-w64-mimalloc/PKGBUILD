@@ -5,7 +5,7 @@ _realname=mimalloc
 pkgbase=mingw-w64-${_realname}
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 pkgver=2.1.7
-pkgrel=1
+pkgrel=2
 pkgdesc='General-purpose allocator with excellent performance characteristics (mingw-w64)'
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
@@ -28,6 +28,7 @@ build() {
       -DMI_BUILD_OBJECT=OFF \
       -DMI_INSTALL_TOPLEVEL=ON \
       -DMI_BUILD_TESTS=OFF \
+      -DMI_WIN_REDIRECT=OFF \
       ../${_realname}-${pkgver}
 
   ${MINGW_PREFIX}/bin/cmake.exe --build ./
