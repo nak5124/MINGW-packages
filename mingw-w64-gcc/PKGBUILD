@@ -222,7 +222,9 @@ build() {
   fi
 
   # https://gcc.gnu.org/onlinedocs/gccint/Makefile.html
-  make -O STAGE1_CFLAGS="-O2" profiledbootstrap
+  make -O STAGE1_CFLAGS="$CFLAGS" BOOT_CFLAGS="$CFLAGS" bootstrap
+
+
 }
 
 package_gcc-libs() {
