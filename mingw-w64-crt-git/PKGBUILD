@@ -3,9 +3,9 @@
 _realname=crt
 pkgbase=mingw-w64-${_realname}-git
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
-pkgver=12.0.0.r546.gb54abc415
+pkgver=12.0.0.r550.ge18c97efd
 pkgrel=1
-_commit='b54abc41547a49d047a868bbc42c80042df429d4'
+_commit='e18c97efd77f6ce820427a8bf209b858ac7eef95'
 pkgdesc='MinGW-w64 CRT for Windows (mingw-w64)'
 arch=('any')
 mingw_arch=('ucrt64' 'clang64' 'clangarm64')

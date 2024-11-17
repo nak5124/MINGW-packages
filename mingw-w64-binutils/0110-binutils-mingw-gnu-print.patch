@@ -7,7 +7,7 @@ index 44a8e1da644..4010829dc49 100644
        if (sizeof (address) > sizeof (long))
  	{
 -#ifndef __MSVCRT__
-+#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
++#if 1
  	  printf ("%7llo ", (unsigned long long) address);
  #else
  	  printf ("%7I64o ", (unsigned long long) address);
@@ -16,7 +16,7 @@ index 44a8e1da644..4010829dc49 100644
        if (sizeof (address) > sizeof (long))
  	{
 -#ifndef __MSVCRT__
-+#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
++#if 1
  	  printf ("%7llu ", (unsigned long long) address);
  #else
  	  printf ("%7I64d ", (unsigned long long) address);
@@ -25,7 +25,7 @@ index 44a8e1da644..4010829dc49 100644
        if (sizeof (address) > sizeof (long))
  	{
 -#ifndef __MSVCRT__
-+#if !defined(__MSVCRT__) || defined(__USE_MINGW_ANSI_STDIO)
++#if 1
  	  printf ("%7llx ", (unsigned long long) address);
  #else
  	  printf ("%7I64x ", (unsigned long long) address);
