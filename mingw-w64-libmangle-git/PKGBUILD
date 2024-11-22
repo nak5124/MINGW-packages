@@ -5,14 +5,14 @@ pkgbase=mingw-w64-${_realname}-git
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
 provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=12.0.0.r369.g0d4221712
+pkgver=12.0.0.r557.gf9048b645
 pkgrel=1
-_commit='0d42217123d3aec0341b79f6d959c76e09648a1e'
+_commit='f9048b645426526ef913ee318bd220b395ed0f3a'
 pkgdesc="MinGW-w64 libmangle (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
 url="https://www.mingw-w64.org/"
-msys2_repository_url="https://sourceforge.net/p/mingw-w64/mingw-w64/ci/master/tree/mingw-w64-libraries/libmangle/"
+msys2_repository_url="https://github.com/nak5124/MinGW-w64"
 license=('spdx:MIT')
 groups=("${MINGW_PACKAGE_PREFIX}-toolchain")
 makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
@@ -22,12 +22,17 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
              "${MINGW_PACKAGE_PREFIX}-headers-git"
              "git")
 options=('!emptydirs')
-source=("mingw-w64"::"git+https://git.code.sf.net/p/mingw-w64/mingw-w64#commit=$_commit")
-sha256sums=('9e485504bc32b5b7d7d732388a602749ce4268141d616eb6259777a0da032fe0')
+source=("mingw-w64"::"git+https://github.com/nak5124/MinGW-w64.git#commit=$_commit")
+sha256sums=('49e3d3dc119922b0a57652879181cea7836e709582d1281dffc8c6de7364910e')
 
 pkgver() {
   cd "${srcdir}/mingw-w64"
-  git describe --long ${_commit} | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//g'
+  git describe --long | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//g'
+}
+
+prepare() {
+  cd ${srcdir}/mingw-w64/mingw-w64-libraries/libmangle
+  autoreconf
 }
 
 build() {
