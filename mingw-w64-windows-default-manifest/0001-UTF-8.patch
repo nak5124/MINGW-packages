@@ -1,8 +1,8 @@
 diff --git a/default-manifest.rc b/default-manifest.rc
-index 2c4ddf4..b2504db 100644
+index 2c4ddf4..df19054 100644
 --- a/default-manifest.rc
 +++ b/default-manifest.rc
-@@ -14,16 +14,12 @@ BEGIN
+@@ -14,17 +14,16 @@ BEGIN
    "  </trustInfo>\n"
    "  <compatibility xmlns=""urn:schemas-microsoft-com:compatibility.v1"">\n"
    "    <application>\n"
@@ -15,11 +15,16 @@ index 2c4ddf4..b2504db 100644
 -  "      <!--The ID below indicates application support for Windows 8.1 -->\n"
 -  "      <supportedOS Id=""{1f676c76-80e1-4239-95bb-83d0f6d0da78}""/> \n"
    "      <!--The ID below indicates application support for Windows 10 -->\n"
-+  "      <maxversiontested Id=""10.0.26100.2161""/>\n"
-   "      <supportedOS Id=""{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}""/> \n"
-+  "      <windowsSettings>\n"
-+  "        <activeCodePage xmlns=""http://schemas.microsoft.com/SMI/2019/WindowsSettings"">UTF-8</activeCodePage>\n"
-+  "      </windowsSettings>\n"
+-  "      <supportedOS Id=""{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}""/> \n"
++  "      <maxversiontested Id=""10.0.26100.2314""/>\n"
++  "      <supportedOS Id=""{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}""/>\n"
    "    </application>\n"
    "  </compatibility>\n"
++  "  <application xmlns=""urn:schemas-microsoft-com:asm.v3"">\n"
++  "    <windowsSettings>\n"
++  "      <longPathAware xmlns=""http://schemas.microsoft.com/SMI/2016/WindowsSettings"">true</longPathAware>\n"
++  "      <activeCodePage xmlns=""http://schemas.microsoft.com/SMI/2019/WindowsSettings"">UTF-8</activeCodePage>\n"
++  "    </windowsSettings>\n"
++  "  </application>\n"
    "</assembly>\n"
+ END

@@ -4,7 +4,7 @@ _realname=windows-default-manifest
 pkgbase=mingw-w64-${_realname}
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgver=6.4
-pkgrel=5
+pkgrel=6
 pkgdesc='Default Windows application manifest (mingw-w64)'
 url='https://cygwin.com/'
 arch=('any')
@@ -13,13 +13,13 @@ license=('BSD')
 makedepends=('git' "${MINGW_PACKAGE_PREFIX}-cc" "${MINGW_PACKAGE_PREFIX}-autotools")
 _GIT_TAG="release-6_4"
 source=("git+https://sourceware.org/git/cygwin-apps/${_realname}.git#tag=${_GIT_TAG}"
-        utf-8.diff)
+        0001-UTF-8.patch)
 sha256sums=('69743b1ad7e6046d95a04b9aa565e3216a570dae5ff48e615f96a08781b56aa0'
-            '2065105e0b84923142fb5e7cc51504496494fd9666a800317cd43e9f13d5ef9c')
+            'ed2020e03642f2db02defed92161d08eef14b0b7791fb005a6cbc1cafd6d778f')
 
 prepare () {
   cd "${srcdir}"/${_realname}
-  patch -p1 -i ${srcdir}/utf-8.diff
+  patch -p1 -i ${srcdir}/0001-UTF-8.patch
 }
 
 build() {
