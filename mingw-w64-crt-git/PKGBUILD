@@ -3,9 +3,9 @@
 _realname=crt
 pkgbase=mingw-w64-${_realname}-git
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
-pkgver=12.0.0.r550.ge18c97efd
+pkgver=12.0.0.r637.g0e4c9ac8e
 pkgrel=1
-_commit='e18c97efd77f6ce820427a8bf209b858ac7eef95'
+_commit='0e4c9ac8eb03a976dfd03e1ab18fa7ed7ddc4bb6'
 pkgdesc='MinGW-w64 CRT for Windows (mingw-w64)'
 arch=('any')
 mingw_arch=('ucrt64' 'clang64' 'clangarm64')
@@ -20,7 +20,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
              "git")
 provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-options=('!strip' '!buildflags' '!emptydirs')
+options=('!strip' '!emptydirs')
 source=("mingw-w64"::"git+https://github.com/nak5124/MinGW-w64.git#commit=$_commit")
 sha256sums=('SKIP')
 
@@ -49,6 +49,8 @@ build() {
   if [[ $MINGW_PACKAGE_PREFIX == *-clang-* ]]; then
     _extra_config+=("--enable-cfguard")
   fi
+
+  CFLAGS=${CFLAGS/-Wp,-D_FORTIFY_SOURCE=2 -fstack-protector-strong/}
 
   mkdir -p ${srcdir}/build-${MSYSTEM} && cd ${srcdir}/build-${MSYSTEM}
 
