@@ -5,9 +5,9 @@ pkgbase=mingw-w64-${_realname}-git
 pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}-git"
 provides=("${MINGW_PACKAGE_PREFIX}-${_realname}")
 conflicts=("${MINGW_PACKAGE_PREFIX}-${_realname}")
-pkgver=12.0.0.r557.gf9048b645
+pkgver=12.0.0.r637.g0e4c9ac8e
 pkgrel=1
-_commit='f9048b645426526ef913ee318bd220b395ed0f3a'
+_commit='0e4c9ac8eb03a976dfd03e1ab18fa7ed7ddc4bb6'
 pkgdesc="MinGW-w64 libmangle (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clang32' 'clangarm64')
@@ -23,7 +23,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
              "git")
 options=('!emptydirs')
 source=("mingw-w64"::"git+https://github.com/nak5124/MinGW-w64.git#commit=$_commit")
-sha256sums=('49e3d3dc119922b0a57652879181cea7836e709582d1281dffc8c6de7364910e')
+sha256sums=('SKIP')
 
 pkgver() {
   cd "${srcdir}/mingw-w64"
